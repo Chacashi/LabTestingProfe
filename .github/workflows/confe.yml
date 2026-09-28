@@ -1,0 +1,21 @@
+name: Obtener Licencia Unity 6
+on: workflow_dispatch
+
+jobs:
+  get-license:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del codigo
+        uses: actions/checkout@v4
+
+      - name: Solicitar Licencia
+        uses: game-ci/unity-request-activation-file@v2
+        id: request
+        with:
+          unityVersion: '6000.3.10f1'
+
+      - name: Guardar Archivo ALF
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.request.outputs.filePath }}
+          path: ${{ steps.request.outputs.filePath }}
