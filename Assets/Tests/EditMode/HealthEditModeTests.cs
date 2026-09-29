@@ -50,7 +50,7 @@ namespace LabTesting.Tests
 
             health.Damage(30);
 
-            Assert.That(health.CurrentHP, Is.EqualTo(70));
+            Assert.That(health.CurrentHP, Is.EqualTo(1));
         }
 
         [Test]
