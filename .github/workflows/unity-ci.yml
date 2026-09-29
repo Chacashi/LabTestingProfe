@@ -103,3 +103,40 @@ jobs:
         with:
           name: TestResults-playmode
           path: playmode-artifacts
+
+  build:
+    name: Build (StandaloneWindows64)
+    needs: [editmode, playmode]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reuses the Library/ cache produced by the editmode job, so Unity does not
+      # re-import the project from scratch. Falls back to a full import if the
+      # cache is not available yet.
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-6000.3.10f1-build
+          restore-keys: |
+            Library-6000.3.10f1-editmode
+            Library-6000.3.10f1-
+            Library-
+
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: '6000.3.10f1'
+          projectPath: .
+          targetPlatform: StandaloneWindows64
+          buildsPath: build
+          customParameters: -nographics
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Build-StandaloneWindows64
+          path: build/StandaloneWindows64
